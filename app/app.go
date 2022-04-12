@@ -39,7 +39,11 @@ func InitApp() (a *App, err error) {
 	if !ok {
 		return a, errors.New("PORT environment variable not set")
 	}
-	a.listenAddr = "127.0.0.1:" + port
+	if a.isHeroku {
+		a.listenAddr = ":" + port
+	} else {
+		a.listenAddr = "127.0.0.1:" + port
+	}
 
 	databaseUrl, ok := os.LookupEnv("DATABASE_URL")
 	if !ok {
