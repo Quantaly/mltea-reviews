@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLTea Reviews</title>
+    <link rel="stylesheet" href="/static/fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="/static/fontawesome/css/regular.min.css">
+    <link rel="stylesheet" href="/static/fontawesome/css/solid.min.css">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+    <h1>MLTea Reviews</h1>
+
+    <nav>
+        <a href="#top-teas">Top Teas</a>
+        <a href="#recent-reviews">Recent Reviews</a>
+        <a href="#leave-review">Leave a Review</a>
+        <a href="#faq">FAQ</a>
+    </nav>
+
+    <main>
+        <p>Caffeinated teas are in <span class="caffeinated">italics</span></p>
+
+        <section id="top-teas">
+            <h2>Top Teas</h2>
+
+            {{ range .TopTeas }}
+            <div class="card tea-card">
+                <div class="name {{ if .Caffeinated }} caffeinated {{ else }} uncaffeinated {{ end }}">{{ .Name }}</div>
+                <div class="rating"><i class="fa-solid fa-star"></i> {{ .Rating | printf "%.2f" }}</div>
+                <div class="count"><i class="fa-solid fa-users"></i> {{ .RatingCount }}</div>
+            </div>
+            {{ end }}
+        </section>
+
+        <section id="recent-reviews">
+            <h2>Recent Reviews</h2>
+
+            {{ range .RecentReviews }}
+            <div class="card review-card">
+                <div class="reviewer">{{ .Reviewer }}</div>
+                <div class="rating">
+                    {{ if ge .Rating 1 }} <i class="fa-solid fa-star"></i> {{ else }} <i class="fa-regular fa-star"></i> {{ end }}
+                    {{ if ge .Rating 2 }} <i class="fa-solid fa-star"></i> {{ else }} <i class="fa-regular fa-star"></i> {{ end }}
+                    {{ if ge .Rating 3 }} <i class="fa-solid fa-star"></i> {{ else }} <i class="fa-regular fa-star"></i> {{ end }}
+                    {{ if ge .Rating 4 }} <i class="fa-solid fa-star"></i> {{ else }} <i class="fa-regular fa-star"></i> {{ end }}
+                    {{ if ge .Rating 5 }} <i class="fa-solid fa-star"></i> {{ else }} <i class="fa-regular fa-star"></i> {{ end }}
+                </div>
+                <div class="name {{ if .TeaCaffeinated }} caffeinated {{ else }} uncaffeinated {{ end }}">{{ .TeaName }}</div>
+                <div class="comment">{{ .Comment }}</div>
+            </div>
+            {{ end }}
+        </section>
+
+        <section id="leave-review">
+            <h2>Leave a Review</h2>
+
+            <form action="/review" method="post">
+                <label>Your name <input type="text" name="name"></label>
+                <label>Tea variety
+                    <select name="tea">
+                        <optgroup label="Non-caffeinated">
+                            {{ range .NonCaffeinatedTeas }}
+                            <option value="{{ .Id }}">{{ .Name }}</option>
+                            {{ end }}
+                        </optgroup>
+                        <optgroup label="Caffeinated">
+                            {{ range .CaffeinatedTeas }}
+                            <option value="{{ .Id }}">{{ .Name }}</option>
+                            {{ end }}
+                        </optgroup>
+                    </select>
+                </label>
+                <label>Rating
+                    <select name="rating">
+                        <option>5</option>
+                        <option>4</option>
+                        <option>3</option>
+                        <option>2</option>
+                        <option>1</option>
+                    </select>
+                </label>
+                <label>Comment
+                    <textarea name="comment"></textarea>
+                </label>
+                <input type="submit" value="Post">
+            </form>
+        </section>
+
+        <section id="faq">
+            <h2>FAQ</h2>
+
+            <dl>
+                {{ range .FAQ }}
+                <dt>{{ .Question }}</dt>
+                <dd>{{ .Answer }}</dd>
+                {{ end }}
+            </dl>
+        </section>
+    </main>
+</body>
+
+</html>
