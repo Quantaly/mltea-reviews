@@ -35,11 +35,12 @@ type FAQEntry struct {
 }
 
 const (
-	StmtSelectTeaRatings    = "select_tea_ratings"
-	StmtSelectAllTeaRatings = "select_all_tea_ratings"
-	StmtSelectReviews       = "select_reviews"
-	StmtSelectTeas          = "select_teas"
-	StmtSelectFAQEntries    = "select_faq_entries"
+	StmtSelectTeaRatings       = "select_tea_ratings"
+	StmtSelectAllTeaRatings    = "select_all_tea_ratings"
+	StmtSelectReviews          = "select_reviews"
+	StmtSelectReviewsPaginated = "select_reviews_paginated"
+	StmtSelectTeas             = "select_teas"
+	StmtSelectFAQEntries       = "select_faq_entries"
 
 	StmtInsertReview = "insert_review"
 )
@@ -54,6 +55,7 @@ func SetupConnection(ctx context.Context, connString string) (*pgx.Conn, error) 
 		StmtSelectTeaRatings,
 		StmtSelectAllTeaRatings,
 		StmtSelectReviews,
+		StmtSelectReviewsPaginated,
 		StmtSelectTeas,
 		StmtSelectFAQEntries,
 

@@ -82,6 +82,7 @@ func (a *App) Run() error {
 
 	r.HandleFunc("/", a.getIndex).Methods("GET")
 	r.HandleFunc("/teas", a.getTeas).Methods("GET")
+	r.HandleFunc("/reviews", a.getReviews).Methods("GET")
 
 	r.HandleFunc("/review", a.postReview).Methods("POST")
 

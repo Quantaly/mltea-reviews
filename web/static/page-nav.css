@@ -1,0 +1,11 @@
+nav {
+    display: flex;
+}
+
+.prev {
+    align-self: flex-start;
+}
+
+.next {
+    align-self: flex-end;
+}

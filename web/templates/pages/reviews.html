@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLTea Reviews | Reviews</title>
+    {{ template "css-links.html" }}
+    <link rel="stylesheet" href="/static/page-nav.css">
+</head>
+
+<body>
+    <h1>Reviews</h1>
+
+    {{ if ne .Page 1 }}
+    <h2>Page {{ .Page }}</h2>
+    {{ end }}
+
+    <p>Caffeinated teas are in <span class="caffeinated">italics</span></p>
+
+    <main>
+        {{ range .Reviews }}
+        {{ template "review-card.html" . }}
+        {{ end }}
+    </main>
+
+    {{ if or .PrevPage .NextPage }}
+    <nav>
+        {{ if .PrevPage }}
+        <a href="reviews?page={{ .PrevPage }}" class="prev">Prev Page</a>
+        {{ end }}
+        {{ if .NextPage }}
+        <a href="reviews?page={{ .NextPage }}" class="next">Next Page</a>
+        {{ end }}
+    </nav>
+    {{ end }}
+</body>
+
+</html>

@@ -22,6 +22,7 @@ func (a *App) getIndex(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		a.log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	// top teas
