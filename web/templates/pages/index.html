@@ -6,10 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MLTea Reviews</title>
-    <link rel="stylesheet" href="/static/fontawesome/css/fontawesome.min.css">
-    <link rel="stylesheet" href="/static/fontawesome/css/regular.min.css">
-    <link rel="stylesheet" href="/static/fontawesome/css/solid.min.css">
-    <link rel="stylesheet" href="/static/style.css">
+    {{ template "css-links.html" }}
 </head>
 
 <body>
@@ -29,11 +26,7 @@
             <h2>Top Teas</h2>
 
             {{ range .TopTeas }}
-            <div class="card tea-card">
-                <div class="name {{ if .Caffeinated }} caffeinated {{ else }} uncaffeinated {{ end }}">{{ .Name }}</div>
-                <div class="rating"><i class="fa-solid fa-star"></i> {{ .Rating | printf "%.2f" }}</div>
-                <div class="count"><i class="fa-solid fa-users"></i> {{ .RatingCount }}</div>
-            </div>
+            {{ template "tea-card.html" . }}
             {{ end }}
         </section>
 
@@ -41,18 +34,7 @@
             <h2>Recent Reviews</h2>
 
             {{ range .RecentReviews }}
-            <div class="card review-card">
-                <div class="reviewer">{{ .Reviewer }}</div>
-                <div class="rating">
-                    {{ if ge .Rating 1 }} <i class="fa-solid fa-star"></i> {{ else }} <i class="fa-regular fa-star"></i> {{ end }}
-                    {{ if ge .Rating 2 }} <i class="fa-solid fa-star"></i> {{ else }} <i class="fa-regular fa-star"></i> {{ end }}
-                    {{ if ge .Rating 3 }} <i class="fa-solid fa-star"></i> {{ else }} <i class="fa-regular fa-star"></i> {{ end }}
-                    {{ if ge .Rating 4 }} <i class="fa-solid fa-star"></i> {{ else }} <i class="fa-regular fa-star"></i> {{ end }}
-                    {{ if ge .Rating 5 }} <i class="fa-solid fa-star"></i> {{ else }} <i class="fa-regular fa-star"></i> {{ end }}
-                </div>
-                <div class="name {{ if .TeaCaffeinated }} caffeinated {{ else }} uncaffeinated {{ end }}">{{ .TeaName }}</div>
-                <div class="comment">{{ .Comment }}</div>
-            </div>
+            {{ template "review-card.html" . }}
             {{ end }}
         </section>
 

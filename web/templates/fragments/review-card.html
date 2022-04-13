@@ -1,0 +1,12 @@
+<div class="card review-card">
+    <div class="reviewer">{{ .Reviewer }}</div>
+    <div class="rating">
+        {{ if ge .Rating 1 }} <i class="fa-solid fa-star"></i> {{ else }} <i class="fa-regular fa-star"></i> {{ end }}
+        {{ if ge .Rating 2 }} <i class="fa-solid fa-star"></i> {{ else }} <i class="fa-regular fa-star"></i> {{ end }}
+        {{ if ge .Rating 3 }} <i class="fa-solid fa-star"></i> {{ else }} <i class="fa-regular fa-star"></i> {{ end }}
+        {{ if ge .Rating 4 }} <i class="fa-solid fa-star"></i> {{ else }} <i class="fa-regular fa-star"></i> {{ end }}
+        {{ if ge .Rating 5 }} <i class="fa-solid fa-star"></i> {{ else }} <i class="fa-regular fa-star"></i> {{ end }}
+    </div>
+    <div class="name {{ if .TeaCaffeinated }} caffeinated {{ else }} uncaffeinated {{ end }}">{{ .TeaName }}</div>
+    <div class="comment">{{ .Comment }}</div>
+</div>

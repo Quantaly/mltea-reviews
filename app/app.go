@@ -58,10 +58,12 @@ func (a *App) init() (err error) {
 		return errors.New("DATABASE_URL environment variable not set")
 	}
 
-	a.templates, err = template.ParseGlob("web/templates/*")
+	a.templates = template.New("blank")
+	_, err = a.templates.ParseGlob("web/templates/*/*.html")
 	if err != nil {
 		return
 	}
+	a.log.Println(a.templates.DefinedTemplates())
 
 	a.db, err = pgx.Connect(context.Background(), databaseUrl)
 	if err != nil {
