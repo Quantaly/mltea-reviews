@@ -1,5 +1,5 @@
 <div class="card tea-card">
     <div class="name {{ if .Caffeinated }} caffeinated {{ else }} uncaffeinated {{ end }}">{{ .Name }}</div>
     <div class="rating"><i class="fa-solid fa-star"></i> {{ .Rating | printf "%.2f" }}</div>
-    <div class="count"><i class="fa-solid fa-users"></i> {{ .RatingCount }}</div>
+    <div class="count"><i class="fa-solid fa-users"></i> {{ .ReviewCount }}</div>
 </div>

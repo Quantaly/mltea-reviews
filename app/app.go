@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/Quantaly/mltea-reviews/app/db"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/jackc/pgx/v4"
@@ -65,79 +66,12 @@ func (a *App) init() (err error) {
 	}
 	a.log.Println(a.templates.DefinedTemplates())
 
-	a.db, err = pgx.Connect(context.Background(), databaseUrl)
-	if err != nil {
-		return
-	}
-	err = a.setupDb()
-	if err != nil {
-		a.db.Close(context.Background())
-		return
-	}
-
-	return
-}
-
-// stored procedure names
-const (
-	stmtSelectTopTeas       = "selectTopTeas"
-	stmtSelectRecentReviews = "selectRecentReviews"
-	stmtSelectAllTeas       = "selectAllTeas"
-	stmtSelectFAQEntries    = "selectFAQEntries"
-	stmtInsertReview        = "insertReview"
-)
-
-func (a *App) setupDb() (err error) {
-	_, err = a.db.Prepare(context.Background(), stmtSelectTopTeas, `
-		WITH tea_info AS (
-			SELECT tea.id, avg(review.rating) AS rating, count(1) AS rating_count
-            FROM tea JOIN review ON tea.id = review.tea_id
-            GROUP BY tea.id)
-		SELECT tea.name, tea.caffeinated, tea_info.rating, tea_info.rating_count
-		FROM tea JOIN tea_info ON tea.id = tea_info.id
-		ORDER BY tea_info.rating DESC
-		LIMIT 10;
-	`)
+	a.db, err = db.SetupConnection(context.Background(), databaseUrl)
 	if err != nil {
 		return
 	}
 
-	_, err = a.db.Prepare(context.Background(), stmtSelectRecentReviews, `
-		SELECT review.reviewer, review.rating, tea.name, tea.caffeinated, review.comment
-		FROM review JOIN tea ON review.tea_id = tea.id
-		ORDER BY review.id DESC
-		LIMIT 5;
-	`)
-	if err != nil {
-		return
-	}
-
-	_, err = a.db.Prepare(context.Background(), stmtSelectAllTeas, `
-		SELECT id, name, caffeinated
-		FROM tea
-		ORDER BY name;
-	`)
-	if err != nil {
-		return
-	}
-
-	_, err = a.db.Prepare(context.Background(), stmtSelectFAQEntries, `
-		SELECT question, answer
-		FROM faq
-		ORDER BY ordinal;
-	`)
-	if err != nil {
-		return
-	}
-
-	_, err = a.db.Prepare(context.Background(), stmtInsertReview, `
-		INSERT INTO review (reviewer, tea_id, rating, comment) VALUES ($1, $2, $3, $4);
-	`)
-	if err != nil {
-		return
-	}
-
-	return
+	return nil
 }
 
 func (a *App) Run() error {

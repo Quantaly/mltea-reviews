@@ -1,40 +1,19 @@
 package app
 
-import "net/http"
+import (
+	"net/http"
+
+	"github.com/Quantaly/mltea-reviews/app/db"
+)
 
 type indexData struct {
-	TopTeas       []ratedTea
-	RecentReviews []review
+	TopTeas       []db.TeaRating
+	RecentReviews []db.Review
 
-	NonCaffeinatedTeas []tea
-	CaffeinatedTeas    []tea
+	NonCaffeinatedTeas []db.Tea
+	CaffeinatedTeas    []db.Tea
 
-	FAQ []faqEntry
-}
-
-type ratedTea struct {
-	Name        string
-	Caffeinated bool
-	Rating      float64
-	RatingCount int
-}
-
-type review struct {
-	Reviewer       string
-	Rating         int
-	TeaName        string
-	TeaCaffeinated bool
-	Comment        string
-}
-
-type tea struct {
-	Id   int
-	Name string
-}
-
-type faqEntry struct {
-	Question string
-	Answer   string
+	FAQ []db.FAQEntry
 }
 
 func (a *App) getIndex(w http.ResponseWriter, r *http.Request) {
@@ -46,12 +25,12 @@ func (a *App) getIndex(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// top teas
-	data.TopTeas = make([]ratedTea, 0, 10)
-	cursor, _ := tx.Query(r.Context(), stmtSelectTopTeas)
+	data.TopTeas = make([]db.TeaRating, 0, 10)
+	cursor, _ := tx.Query(r.Context(), db.StmtSelectTeaRatings)
 	for cursor.Next() {
-		var tea ratedTea
-		cursor.Scan(&tea.Name, &tea.Caffeinated, &tea.Rating, &tea.RatingCount)
-		data.TopTeas = append(data.TopTeas, tea)
+		var rating db.TeaRating
+		cursor.Scan(&rating.Name, &rating.Caffeinated, &rating.Rating, &rating.ReviewCount)
+		data.TopTeas = append(data.TopTeas, rating)
 	}
 	if cursor.Err() != nil {
 		a.log.Println(cursor.Err())
@@ -60,12 +39,12 @@ func (a *App) getIndex(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// recent reviews
-	data.RecentReviews = make([]review, 0, 5)
-	cursor, _ = tx.Query(r.Context(), stmtSelectRecentReviews)
+	data.RecentReviews = make([]db.Review, 0, 5)
+	cursor, _ = tx.Query(r.Context(), db.StmtSelectReviews)
 	for cursor.Next() {
-		var recentReview review
-		cursor.Scan(&recentReview.Reviewer, &recentReview.Rating, &recentReview.TeaName, &recentReview.TeaCaffeinated, &recentReview.Comment)
-		data.RecentReviews = append(data.RecentReviews, recentReview)
+		var review db.Review
+		cursor.Scan(&review.Reviewer, &review.Rating, &review.TeaName, &review.TeaCaffeinated, &review.Comment)
+		data.RecentReviews = append(data.RecentReviews, review)
 	}
 	if cursor.Err() != nil {
 		a.log.Println(cursor.Err())
@@ -74,17 +53,16 @@ func (a *App) getIndex(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// tea list for the dropdown
-	data.NonCaffeinatedTeas = make([]tea, 0)
-	data.CaffeinatedTeas = make([]tea, 0)
-	cursor, _ = tx.Query(r.Context(), stmtSelectAllTeas)
+	data.NonCaffeinatedTeas = make([]db.Tea, 0)
+	data.CaffeinatedTeas = make([]db.Tea, 0)
+	cursor, _ = tx.Query(r.Context(), db.StmtSelectTeas)
 	for cursor.Next() {
-		var listedTea tea
-		var caffeinated bool
-		cursor.Scan(&listedTea.Id, &listedTea.Name, &caffeinated)
-		if caffeinated {
-			data.CaffeinatedTeas = append(data.CaffeinatedTeas, listedTea)
+		var tea db.Tea
+		cursor.Scan(&tea.Id, &tea.Name, &tea.Caffeinated)
+		if tea.Caffeinated {
+			data.CaffeinatedTeas = append(data.CaffeinatedTeas, tea)
 		} else {
-			data.NonCaffeinatedTeas = append(data.NonCaffeinatedTeas, listedTea)
+			data.NonCaffeinatedTeas = append(data.NonCaffeinatedTeas, tea)
 		}
 	}
 	if cursor.Err() != nil {
@@ -94,10 +72,10 @@ func (a *App) getIndex(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// faq
-	data.FAQ = make([]faqEntry, 0)
-	cursor, _ = tx.Query(r.Context(), stmtSelectFAQEntries)
+	data.FAQ = make([]db.FAQEntry, 0)
+	cursor, _ = tx.Query(r.Context(), db.StmtSelectFAQEntries)
 	for cursor.Next() {
-		var entry faqEntry
+		var entry db.FAQEntry
 		cursor.Scan(&entry.Question, &entry.Answer)
 		data.FAQ = append(data.FAQ, entry)
 	}

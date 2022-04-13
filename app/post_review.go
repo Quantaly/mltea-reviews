@@ -3,6 +3,8 @@ package app
 import (
 	"net/http"
 	"strconv"
+
+	"github.com/Quantaly/mltea-reviews/app/db"
 )
 
 func (a *App) postReview(w http.ResponseWriter, r *http.Request) {
@@ -28,7 +30,7 @@ func (a *App) postReview(w http.ResponseWriter, r *http.Request) {
 
 	comment := r.Form.Get("comment")
 
-	_, err = a.db.Exec(r.Context(), stmtInsertReview, reviewer, teaId, rating, comment)
+	_, err = a.db.Exec(r.Context(), db.StmtInsertReview, reviewer, teaId, rating, comment)
 	if err != nil {
 		a.log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
