@@ -1,14 +1,15 @@
 package main
 
 import (
+	"os"
+
 	"github.com/Quantaly/mltea-reviews/app"
 )
 
 func main() {
-	a, err := app.InitApp()
-	if err != nil {
-		a.Logger.Fatalln(err)
+	a, err := app.New()
+	if err == nil {
+		a.Run()
 	}
-
-	a.Logger.Fatalln(a.Run())
+	os.Exit(1)
 }

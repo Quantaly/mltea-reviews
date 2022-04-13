@@ -14,30 +14,38 @@ import (
 )
 
 type App struct {
-	Logger *log.Logger
-
+	log        *log.Logger
 	isHeroku   bool
 	listenAddr string
 	templates  *template.Template
 	db         *pgx.Conn
 }
 
-// even if err != nil, a is not nil and a.Logger is ready to use
-func InitApp() (a *App, err error) {
-	a = new(App)
+func New() (*App, error) {
+	a := new(App)
+	err := a.init()
+	if err != nil {
+		// a.log is def set up
+		a.log.Println(err)
+		return nil, err
+	} else {
+		return a, nil
+	}
+}
 
-	a.Logger = log.New(os.Stderr, "", log.LstdFlags)
+func (a *App) init() (err error) {
+	a.log = log.New(os.Stderr, "", log.LstdFlags)
 
 	_, a.isHeroku = os.LookupEnv("DYNO")
 	if a.isHeroku {
-		a.Logger.SetFlags(log.Lshortfile)
+		a.log.SetFlags(log.Lshortfile)
 	} else {
-		a.Logger.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
+		a.log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
 	}
 
 	port, ok := os.LookupEnv("PORT")
 	if !ok {
-		return a, errors.New("PORT environment variable not set")
+		return errors.New("PORT environment variable not set")
 	}
 	if a.isHeroku {
 		a.listenAddr = ":" + port
@@ -47,7 +55,7 @@ func InitApp() (a *App, err error) {
 
 	databaseUrl, ok := os.LookupEnv("DATABASE_URL")
 	if !ok {
-		return a, errors.New("DATABASE_URL environment variable not set")
+		return errors.New("DATABASE_URL environment variable not set")
 	}
 
 	a.templates, err = template.ParseGlob("web/templates/*")
@@ -139,8 +147,9 @@ func (a *App) Run() error {
 	r.HandleFunc("/", a.getIndex).Methods("GET")
 	r.HandleFunc("/review", a.postReview).Methods("POST")
 
-	a.Logger.Println("Listening on", a.listenAddr)
+	a.log.Println("Listening on", a.listenAddr)
 	err := http.ListenAndServe(a.listenAddr, r)
+	a.log.Println(err)
 	a.db.Close(context.Background())
 	return err
 }

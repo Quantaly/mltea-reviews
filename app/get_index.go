@@ -41,7 +41,7 @@ func (a *App) getIndex(w http.ResponseWriter, r *http.Request) {
 	var data indexData
 	tx, err := a.db.Begin(r.Context())
 	if err != nil {
-		a.Logger.Println(err)
+		a.log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
@@ -54,7 +54,7 @@ func (a *App) getIndex(w http.ResponseWriter, r *http.Request) {
 		data.TopTeas = append(data.TopTeas, tea)
 	}
 	if cursor.Err() != nil {
-		a.Logger.Println(cursor.Err())
+		a.log.Println(cursor.Err())
 		http.Error(w, cursor.Err().Error(), http.StatusInternalServerError)
 		return
 	}
@@ -68,7 +68,7 @@ func (a *App) getIndex(w http.ResponseWriter, r *http.Request) {
 		data.RecentReviews = append(data.RecentReviews, recentReview)
 	}
 	if cursor.Err() != nil {
-		a.Logger.Println(cursor.Err())
+		a.log.Println(cursor.Err())
 		http.Error(w, cursor.Err().Error(), http.StatusInternalServerError)
 		return
 	}
@@ -88,7 +88,7 @@ func (a *App) getIndex(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	if cursor.Err() != nil {
-		a.Logger.Println(cursor.Err())
+		a.log.Println(cursor.Err())
 		http.Error(w, cursor.Err().Error(), http.StatusInternalServerError)
 		return
 	}
@@ -102,7 +102,7 @@ func (a *App) getIndex(w http.ResponseWriter, r *http.Request) {
 		data.FAQ = append(data.FAQ, entry)
 	}
 	if cursor.Err() != nil {
-		a.Logger.Println(cursor.Err())
+		a.log.Println(cursor.Err())
 		http.Error(w, cursor.Err().Error(), http.StatusInternalServerError)
 		return
 	}
@@ -111,7 +111,7 @@ func (a *App) getIndex(w http.ResponseWriter, r *http.Request) {
 
 	err = a.templates.ExecuteTemplate(w, "index.html", &data)
 	if err != nil {
-		a.Logger.Println(err)
+		a.log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }

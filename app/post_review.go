@@ -1,7 +1,6 @@
 package app
 
 import (
-	"log"
 	"net/http"
 	"strconv"
 )
@@ -31,7 +30,7 @@ func (a *App) postReview(w http.ResponseWriter, r *http.Request) {
 
 	_, err = a.db.Exec(r.Context(), stmtInsertReview, reviewer, teaId, rating, comment)
 	if err != nil {
-		log.Println(err)
+		a.log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
