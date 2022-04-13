@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MLTea Reviews</title>
     {{ template "css-links.html" }}
+    <link rel="stylesheet" href="/static/index.css">
 </head>
 
 <body>
@@ -28,6 +29,8 @@
             {{ range .TopTeas }}
             {{ template "tea-card.html" . }}
             {{ end }}
+
+            <a href="teas">See all</a>
         </section>
 
         <section id="recent-reviews">

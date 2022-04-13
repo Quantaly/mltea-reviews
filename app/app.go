@@ -81,6 +81,8 @@ func (a *App) Run() error {
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("web/static"))))
 
 	r.HandleFunc("/", a.getIndex).Methods("GET")
+	r.HandleFunc("/teas", a.getTeas).Methods("GET")
+
 	r.HandleFunc("/review", a.postReview).Methods("POST")
 
 	a.log.Println("Listening on", a.listenAddr)

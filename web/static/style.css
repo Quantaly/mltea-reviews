@@ -35,45 +35,6 @@ nav {
     gap: 2em;
 }
 
-@media screen and (min-width: 700px) {
-    main {
-        margin: 8px;
-        display: grid;
-        grid-template-columns: 50% 50%;
-        grid-template-rows: auto auto auto;
-        grid-template-areas: 'p p' 'top-teas recent-reviews' 'leave-review faq';
-        gap: 1em;
-    }
-
-    main>p {
-        grid-area: p;
-    }
-
-    #top-teas {
-        grid-area: top-teas;
-    }
-
-    #recent-reviews {
-        grid-area: recent-reviews;
-    }
-
-    #leave-review {
-        grid-area: leave-review;
-    }
-
-    #faq {
-        grid-area: faq;
-    }
-
-    p {
-        margin-bottom: 0;
-    }
-
-    h2 {
-        margin-top: 0;
-    }
-}
-
 .caffeinated {
     color: var(--wong-orange);
     font-style: italic;
@@ -88,6 +49,7 @@ nav {
     border: 1px solid #aaa;
     border-radius: 0.5em;
     padding: 0.5em;
+    max-width: 1200px;
 }
 
 .tea-card {
@@ -108,7 +70,7 @@ nav {
     gap: 0.25em;
 }
 
-.name {
+.card .name {
     grid-area: name;
     height: min-content;
     width: 100%;
@@ -116,7 +78,7 @@ nav {
     gap: 0.25em;
 }
 
-.rating {
+.card .rating {
     grid-area: rating;
     color: var(--wong-gold);
     margin-top: auto;
@@ -124,41 +86,17 @@ nav {
     text-align: end;
 }
 
-.count {
+.card .count {
     grid-area: count;
 }
 
-.reviewer {
+.card .reviewer {
     grid-area: reviewer;
 }
 
-.comment {
+.card .comment {
     grid-area: comment;
     margin-top: 0.125em;
     border-top: 1px solid #aaa;
     padding-top: 0.25em;
-}
-
-label {
-    display: block;
-    padding: 0.25em;
-}
-
-input {
-    margin-left: 0.25em;
-}
-
-select {
-    display: block;
-    max-width: 100%;
-}
-
-textarea {
-    display: block;
-    width: 100%;
-}
-
-dt {
-    margin: 0.25em 0 0.125em 0;
-    font-weight: bold;
 }

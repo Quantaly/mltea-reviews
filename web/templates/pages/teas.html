@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLTea Reviews | Teas</title>
+    {{ template "css-links.html" }}
+</head>
+
+<body>
+    <h1>Tea List</h1>
+
+    <p>Caffeinated teas are in <span class="caffeinated">italics</span></p>
+
+    <main>
+        {{ range .Teas }}
+        {{ template "tea-card.html" . }}
+        {{ end }}
+    </main>
+</body>
+
+</html>
