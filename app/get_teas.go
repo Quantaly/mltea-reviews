@@ -7,7 +7,8 @@ import (
 )
 
 type teaListData struct {
-	Teas []db.TeaRating
+	Teas            []db.TeaRating
+	UnavailableTeas []db.TeaRating
 
 	// Page     int
 	// PrevPage int
@@ -18,11 +19,17 @@ func (a *App) getTeas(w http.ResponseWriter, r *http.Request) {
 	var data teaListData
 
 	data.Teas = make([]db.TeaRating, 0)
+	data.UnavailableTeas = make([]db.TeaRating, 0)
 	cursor, _ := a.db.Query(r.Context(), db.StmtSelectAllTeaRatings)
 	for cursor.Next() {
 		var rating db.TeaRating
-		cursor.Scan(&rating.Name, &rating.Caffeinated, &rating.Rating, &rating.ReviewCount)
-		data.Teas = append(data.Teas, rating)
+		var available bool
+		cursor.Scan(&rating.Name, &rating.Caffeinated, &rating.Rating, &rating.ReviewCount, &available)
+		if available {
+			data.Teas = append(data.Teas, rating)
+		} else {
+			data.UnavailableTeas = append(data.UnavailableTeas, rating)
+		}
 	}
 	if cursor.Err() != nil {
 		a.log.Println(cursor.Err())

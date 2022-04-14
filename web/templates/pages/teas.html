@@ -18,6 +18,12 @@
         {{ range .Teas }}
         {{ template "tea-card.html" . }}
         {{ end }}
+
+        <h2>Currently unavailable</h2>
+
+        {{ range .UnavailableTeas }}
+        {{ template "tea-card.html" . }}
+        {{ end }}
     </main>
 </body>
 
