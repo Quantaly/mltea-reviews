@@ -24,7 +24,7 @@ type Review struct {
 }
 
 type Tea struct {
-	Id          int
+	ID          int
 	Name        string
 	Caffeinated bool
 }

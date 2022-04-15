@@ -16,7 +16,7 @@ func (a *App) postReview(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	teaId, err := strconv.Atoi(r.Form.Get("tea"))
+	teaID, err := strconv.Atoi(r.Form.Get("tea"))
 	if err != nil {
 		http.Error(w, "invalid tea id", http.StatusBadRequest)
 		return
@@ -30,7 +30,7 @@ func (a *App) postReview(w http.ResponseWriter, r *http.Request) {
 
 	comment := r.Form.Get("comment")
 
-	_, err = a.db.Exec(r.Context(), db.StmtInsertReview, reviewer, teaId, rating, comment)
+	_, err = a.db.Exec(r.Context(), db.StmtInsertReview, reviewer, teaID, rating, comment)
 	if err != nil {
 		a.log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)

@@ -52,12 +52,12 @@
                     <select name="tea">
                         <optgroup label="Non-caffeinated">
                             {{ range .NonCaffeinatedTeas }}
-                            <option value="{{ .Id }}">{{ .Name }}</option>
+                            <option value="{{ .ID }}">{{ .Name }}</option>
                             {{ end }}
                         </optgroup>
                         <optgroup label="Caffeinated">
                             {{ range .CaffeinatedTeas }}
-                            <option value="{{ .Id }}">{{ .Name }}</option>
+                            <option value="{{ .ID }}">{{ .Name }}</option>
                             {{ end }}
                         </optgroup>
                     </select>

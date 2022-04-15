@@ -20,10 +20,10 @@ type App struct {
 	db        *pgx.Conn
 }
 
-func New(log *log.Logger, databaseUrl string) (*App, error) {
+func New(log *log.Logger, databaseURL string) (*App, error) {
 	a := new(App)
 	a.log = log
-	err := a.init(databaseUrl)
+	err := a.init(databaseURL)
 	if err != nil {
 		// a.log is def set up
 		a.log.Println(err)
@@ -33,8 +33,8 @@ func New(log *log.Logger, databaseUrl string) (*App, error) {
 	}
 }
 
-func (a *App) init(databaseUrl string) (err error) {
-	databaseUrl, ok := os.LookupEnv("DATABASE_URL")
+func (a *App) init(databaseURL string) (err error) {
+	databaseURL, ok := os.LookupEnv("DATABASE_URL")
 	if !ok {
 		return errors.New("DATABASE_URL environment variable not set")
 	}
@@ -46,7 +46,7 @@ func (a *App) init(databaseUrl string) (err error) {
 	}
 	a.log.Println(a.templates.DefinedTemplates())
 
-	a.db, err = db.SetupConnection(context.Background(), databaseUrl)
+	a.db, err = db.SetupConnection(context.Background(), databaseURL)
 	if err != nil {
 		return
 	}

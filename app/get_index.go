@@ -59,7 +59,7 @@ func (a *App) getIndex(w http.ResponseWriter, r *http.Request) {
 	cursor, _ = tx.Query(r.Context(), db.StmtSelectTeas)
 	for cursor.Next() {
 		var tea db.Tea
-		cursor.Scan(&tea.Id, &tea.Name, &tea.Caffeinated)
+		cursor.Scan(&tea.ID, &tea.Name, &tea.Caffeinated)
 		if tea.Caffeinated {
 			data.CaffeinatedTeas = append(data.CaffeinatedTeas, tea)
 		} else {

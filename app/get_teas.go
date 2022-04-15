@@ -9,10 +9,6 @@ import (
 type teaListData struct {
 	Teas            []db.TeaRating
 	UnavailableTeas []db.TeaRating
-
-	// Page     int
-	// PrevPage int
-	// NextPage int
 }
 
 func (a *App) getTeas(w http.ResponseWriter, r *http.Request) {

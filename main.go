@@ -31,12 +31,12 @@ func main() {
 		listenAddr = "127.0.0.1:" + port
 	}
 
-	databaseUrl, ok := os.LookupEnv("DATABASE_URL")
+	databaseURL, ok := os.LookupEnv("DATABASE_URL")
 	if !ok {
 		logger.Fatalln("DATABASE_URL environment variable not set")
 	}
 
-	a, err := app.New(logger, databaseUrl)
+	a, err := app.New(logger, databaseURL)
 	if err == nil {
 		a.Run(listenAddr)
 	}
