@@ -3,6 +3,7 @@ package db
 import (
 	"context"
 	"fmt"
+	"html/template"
 	"os"
 
 	"github.com/jackc/pgx/v4"
@@ -31,8 +32,8 @@ type Tea struct {
 }
 
 type FAQEntry struct {
-	Question string
-	Answer   string
+	Question template.HTML
+	Answer   template.HTML
 }
 
 const (
