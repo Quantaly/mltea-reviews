@@ -11,13 +11,13 @@ import (
 	"github.com/Quantaly/mltea-reviews/app/db"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
-	"github.com/jackc/pgx/v4"
+	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 type App struct {
 	log       *log.Logger
 	templates *template.Template
-	db        *pgx.Conn
+	db        *pgxpool.Pool
 }
 
 func New(log *log.Logger, databaseURL string) (*App, error) {
@@ -46,7 +46,7 @@ func (a *App) init(databaseURL string) (err error) {
 	}
 	a.log.Println(a.templates.DefinedTemplates())
 
-	a.db, err = db.SetupConnection(context.Background(), databaseURL)
+	a.db, err = db.SetupConnectionPool(context.Background(), databaseURL)
 	if err != nil {
 		return
 	}
@@ -69,6 +69,6 @@ func (a *App) Run(listenAddr string) error {
 	a.log.Println("Listening on", listenAddr)
 	err := http.ListenAndServe(listenAddr, r)
 	a.log.Println(err)
-	a.db.Close(context.Background())
+	a.db.Close()
 	return err
 }

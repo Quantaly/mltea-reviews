@@ -34,6 +34,7 @@ func (a *App) getIndex(w http.ResponseWriter, r *http.Request) {
 		data.TopTeas = append(data.TopTeas, rating)
 	}
 	if cursor.Err() != nil {
+		tx.Rollback(r.Context())
 		a.log.Println(cursor.Err())
 		http.Error(w, cursor.Err().Error(), http.StatusInternalServerError)
 		return
@@ -48,6 +49,7 @@ func (a *App) getIndex(w http.ResponseWriter, r *http.Request) {
 		data.RecentReviews = append(data.RecentReviews, review)
 	}
 	if cursor.Err() != nil {
+		tx.Rollback(r.Context())
 		a.log.Println(cursor.Err())
 		http.Error(w, cursor.Err().Error(), http.StatusInternalServerError)
 		return
@@ -67,6 +69,7 @@ func (a *App) getIndex(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	if cursor.Err() != nil {
+		tx.Rollback(r.Context())
 		a.log.Println(cursor.Err())
 		http.Error(w, cursor.Err().Error(), http.StatusInternalServerError)
 		return
@@ -81,12 +84,19 @@ func (a *App) getIndex(w http.ResponseWriter, r *http.Request) {
 		data.FAQ = append(data.FAQ, entry)
 	}
 	if cursor.Err() != nil {
+		tx.Rollback(r.Context())
 		a.log.Println(cursor.Err())
 		http.Error(w, cursor.Err().Error(), http.StatusInternalServerError)
 		return
 	}
 
-	tx.Commit(r.Context()) // don't particularly care about this error
+	err = tx.Commit(r.Context())
+	if err != nil {
+		tx.Rollback(r.Context())
+		a.log.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	err = a.templates.ExecuteTemplate(w, "index.html", &data)
 	if err != nil {

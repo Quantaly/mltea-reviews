@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/jackc/pgx/v4"
+	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 type TeaRating struct {
@@ -45,13 +46,13 @@ const (
 	StmtInsertReview = "insert_review"
 )
 
-func SetupConnection(ctx context.Context, connString string) (*pgx.Conn, error) {
-	conn, err := pgx.Connect(ctx, connString)
+func SetupConnectionPool(ctx context.Context, connString string) (*pgxpool.Pool, error) {
+	config, err := pgxpool.ParseConfig(connString)
 	if err != nil {
 		return nil, err
 	}
 
-	for _, stmt := range []string{
+	statementNames := []string{
 		StmtSelectTeaRatings,
 		StmtSelectAllTeaRatings,
 		StmtSelectReviews,
@@ -60,18 +61,27 @@ func SetupConnection(ctx context.Context, connString string) (*pgx.Conn, error) 
 		StmtSelectFAQEntries,
 
 		StmtInsertReview,
-	} {
+	}
+	statementMap := make(map[string]string, len(statementNames))
+	for _, stmt := range statementNames {
 		sql, err := os.ReadFile(fmt.Sprintf("sql/%s.sql", stmt))
 		if err != nil {
-			conn.Close(ctx)
 			return nil, err
 		}
-		_, err = conn.Prepare(ctx, stmt, string(sql))
-		if err != nil {
-			conn.Close(ctx)
-			return nil, err
-		}
+		statementMap[stmt] = string(sql)
 	}
 
-	return conn, err
+	config.AfterConnect = func(ctx context.Context, c *pgx.Conn) error {
+		for stmt, sql := range statementMap {
+			_, err := c.Prepare(ctx, stmt, sql)
+			if err != nil {
+				return err
+			}
+		}
+		return nil
+	}
+
+	config.MaxConns = 15
+
+	return pgxpool.ConnectConfig(ctx, config)
 }
