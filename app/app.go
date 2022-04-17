@@ -2,11 +2,9 @@ package app
 
 import (
 	"context"
-	"errors"
 	"html/template"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/Quantaly/mltea-reviews/app/db"
 	"github.com/gorilla/handlers"
@@ -33,22 +31,17 @@ func New(log *log.Logger, databaseURL string) (*App, error) {
 	}
 }
 
-func (a *App) init(databaseURL string) (err error) {
-	databaseURL, ok := os.LookupEnv("DATABASE_URL")
-	if !ok {
-		return errors.New("DATABASE_URL environment variable not set")
-	}
-
+func (a *App) init(databaseURL string) error {
 	a.templates = template.New("blank")
-	_, err = a.templates.ParseGlob("web/templates/*/*.html")
+	_, err := a.templates.ParseGlob("web/templates/*/*.html")
 	if err != nil {
-		return
+		return err
 	}
 	a.log.Println(a.templates.DefinedTemplates())
 
 	a.db, err = db.SetupConnectionPool(context.Background(), databaseURL)
 	if err != nil {
-		return
+		return err
 	}
 
 	return nil
