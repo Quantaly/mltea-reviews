@@ -6,4 +6,4 @@ I was bored so I made a website for reviewing the tea blends that Mines Little T
 
 `PORT`: listen for HTTP requests on
 
-`DATABASE_URL`: PostgreSQL database (todo: provide the DDL)
+`DATABASE_URL`: PostgreSQL database
